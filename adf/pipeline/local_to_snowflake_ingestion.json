@@ -1,0 +1,330 @@
+{
+	"name": "local_to_snowflake_ingestion",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('files')",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "creating_schemas",
+							"type": "Switch",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"on": {
+									"value": "@item()",
+									"type": "Expression"
+								},
+								"cases": [
+									{
+										"value": "customers",
+										"activities": [
+											{
+												"name": "create_customer_table",
+												"description": "",
+												"type": "Script",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"linkedServiceName": {
+													"referenceName": "Snowflake1",
+													"type": "LinkedServiceReference"
+												},
+												"typeProperties": {
+													"scripts": [
+														{
+															"type": "Query",
+															"text": "CREATE OR ALTER TABLE RAW_DATA.CUSTOMERS(\n\tcompany nvarchar(50) NOT NULL,\n\tcustomer_id int NOT NULL,\n\tcustomername nvarchar(100) NOT NULL\n)"
+														}
+													],
+													"scriptBlockExecutionTimeout": "02:00:00"
+												}
+											},
+											{
+												"name": "copying_customer_data",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "create_customer_table",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "SqlServerSource",
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "SnowflakeV2Sink",
+														"importSettings": {
+															"type": "SnowflakeImportCopyCommand"
+														}
+													},
+													"enableStaging": true,
+													"stagingSettings": {
+														"linkedServiceName": {
+															"referenceName": "staging_service",
+															"type": "LinkedServiceReference"
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "sql_server_data",
+														"type": "DatasetReference",
+														"parameters": {
+															"table": {
+																"value": "@item()",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "snowflake_connection",
+														"type": "DatasetReference",
+														"parameters": {
+															"table_name": {
+																"value": "@item()",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											}
+										]
+									},
+									{
+										"value": "products",
+										"activities": [
+											{
+												"name": "create_products_table",
+												"type": "Script",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"linkedServiceName": {
+													"referenceName": "Snowflake1",
+													"type": "LinkedServiceReference"
+												},
+												"typeProperties": {
+													"scripts": [
+														{
+															"type": "Query",
+															"text": "CREATE OR ALTER TABLE RAW_DATA.PRODUCTS(\n\tproduct_id nvarchar(50) NULL,\n\tPRODUCT_Family nvarchar(50) NULL,\n\tproduct_sub_family nvarchar(100) NULL\n)"
+														}
+													],
+													"scriptBlockExecutionTimeout": "02:00:00"
+												}
+											},
+											{
+												"name": "copy_products_data",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "create_products_table",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "SqlServerSource",
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "SnowflakeV2Sink",
+														"importSettings": {
+															"type": "SnowflakeImportCopyCommand"
+														}
+													},
+													"enableStaging": true,
+													"stagingSettings": {
+														"linkedServiceName": {
+															"referenceName": "staging_service",
+															"type": "LinkedServiceReference"
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "sql_server_data",
+														"type": "DatasetReference",
+														"parameters": {
+															"table": {
+																"value": "@item()",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "snowflake_connection",
+														"type": "DatasetReference",
+														"parameters": {
+															"table_name": {
+																"value": "@item()",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											}
+										]
+									}
+								],
+								"defaultActivities": [
+									{
+										"name": "create_transactions_table",
+										"type": "Script",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"linkedServiceName": {
+											"referenceName": "Snowflake1",
+											"type": "LinkedServiceReference"
+										},
+										"typeProperties": {
+											"scripts": [
+												{
+													"type": "Query",
+													"text": "CREATE OR ALTER TABLE RAW_DATA.TRANSACTIONS(\n\tcustomer_id int NOT NULL,\n\tproduct_id nvarchar(50) NOT NULL,\n\tpayment_month date NOT NULL,\n\trevenue_type int NOT NULL,\n\trevenue float NOT NULL,\n\tquantity int NOT NULL,\n\tdimension_1 nvarchar(50) NOT NULL,\n\tdimension_2 nvarchar(50) NOT NULL,\n\tdimension_3 nvarchar(50) NOT NULL,\n\tdimension_4 nvarchar(50) NOT NULL,\n\tdimension_5 nvarchar(50) NOT NULL,\n\tdimension_6 nvarchar(50) NOT NULL,\n\tdimension_7 nvarchar(50) NOT NULL,\n\tdimension_8 nvarchar(50) NOT NULL,\n\tdimension_9 nvarchar(50) NOT NULL,\n\tdimension_10 nvarchar(50) NOT NULL,\n\tcompanies nvarchar(50) NOT NULL\n)"
+												}
+											],
+											"scriptBlockExecutionTimeout": "02:00:00"
+										}
+									},
+									{
+										"name": "copy_transactions_data",
+										"type": "Copy",
+										"dependsOn": [
+											{
+												"activity": "create_transactions_table",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "SqlServerSource",
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
+											},
+											"sink": {
+												"type": "SnowflakeV2Sink",
+												"importSettings": {
+													"type": "SnowflakeImportCopyCommand"
+												}
+											},
+											"enableStaging": true,
+											"stagingSettings": {
+												"linkedServiceName": {
+													"referenceName": "staging_service",
+													"type": "LinkedServiceReference"
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "sql_server_data",
+												"type": "DatasetReference",
+												"parameters": {
+													"table": {
+														"value": "@item()",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "snowflake_connection",
+												"type": "DatasetReference",
+												"parameters": {
+													"table_name": {
+														"value": "@item()",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"files": {
+				"type": "Array",
+				"defaultValue": [
+					"customers",
+					"products",
+					"transactions"
+				]
+			}
+		},
+		"annotations": []
+	}
+}

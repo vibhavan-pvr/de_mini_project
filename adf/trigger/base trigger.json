@@ -1,0 +1,25 @@
+{
+	"name": "base trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Storing_data_in_db",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 1,
+				"startTime": "2025-03-07T18:00:00",
+				"endTime": "2025-03-07T19:00:00",
+				"timeZone": "India Standard Time"
+			}
+		}
+	}
+}

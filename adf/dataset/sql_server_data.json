@@ -1,0 +1,96 @@
+{
+	"name": "sql_server_data",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "local_server",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"table": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "customer_id",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "product_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "payment_month",
+				"type": "date"
+			},
+			{
+				"name": "revenue_type",
+				"type": "bit"
+			},
+			{
+				"name": "revenue",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "quantity",
+				"type": "tinyint",
+				"precision": 3
+			},
+			{
+				"name": "dimension_1",
+				"type": "nvarchar"
+			},
+			{
+				"name": "dimension_2",
+				"type": "nvarchar"
+			},
+			{
+				"name": "dimension_3",
+				"type": "nvarchar"
+			},
+			{
+				"name": "dimension_4",
+				"type": "nvarchar"
+			},
+			{
+				"name": "dimension_5",
+				"type": "nvarchar"
+			},
+			{
+				"name": "dimension_6",
+				"type": "nvarchar"
+			},
+			{
+				"name": "dimension_7",
+				"type": "nvarchar"
+			},
+			{
+				"name": "dimension_8",
+				"type": "nvarchar"
+			},
+			{
+				"name": "dimension_9",
+				"type": "nvarchar"
+			},
+			{
+				"name": "dimension_10",
+				"type": "nvarchar"
+			},
+			{
+				"name": "companies",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": {
+				"value": "@dataset().table",
+				"type": "Expression"
+			}
+		}
+	}
+}

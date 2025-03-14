@@ -1,0 +1,12 @@
+{
+	"name": "rest_api_to_sql",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "sample_rest_service",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	}
+}
