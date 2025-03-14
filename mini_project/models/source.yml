@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: DBT_PROJECT
+    database: MINI_PROJECT
+    schema: RAW_DATA
+    tables:
+      - name: CUSTOMERS
+      - name: PRODUCTS
+      - name: TRANSACTIONS
+      
